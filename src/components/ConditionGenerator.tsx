@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 
-const variable1Array = ["Title", "Quantity", "Price", "Brand"];
+// array for various properties of a product
+const properties = ["Title", "Quantity", "Price", "Brand"];
+
+// object with separate values for numeric and string comparisions
 const relationObj = {
   int: [
     { name: "Equals", value: "==" },
@@ -17,12 +20,13 @@ const relationObj = {
   ],
 };
 function ConditionGenerator() {
-  let [conditions, setConditions] = useState([
+  const [conditions, setConditions] = useState([
     { id: 0, variable1: "Title", relation: "==", variable2: "" },
   ]);
   const [result, setResult] = useState("");
   const [orAnd, setOrAnd] = useState(false);
 
+  // fn handling any change in any of the conditions select and input
   const onChangeHandler = (
     i: number,
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -38,12 +42,13 @@ function ConditionGenerator() {
     setConditions([...conditions]);
   };
 
+  // useEffect will generate the result for every change in conditions or toggling between 'all conditions' and 'any condition' 
   useEffect(() => {
     let condition = "";
     conditions.forEach((ele, i) => {
       if (Object.values(ele).indexOf("") === -1) {
         condition += "(" + ele.variable1 + ele.relation + ele.variable2 + ")";
-        if (i!==conditions.length-1) {
+        if (i !== conditions.length - 1) {
           condition += orAnd ? " || " : " && ";
         }
       }
@@ -51,26 +56,26 @@ function ConditionGenerator() {
     setResult(condition);
   }, [conditions, orAnd]);
 
+  // fn for adding any condition
   const addCondition = () => {
-    let indEmpty=conditions.findIndex((ele)=>{
-      return Object.values(ele).indexOf('')!==-1
-    })
-    console.log(indEmpty)
-    if(indEmpty===-1){
-    let obj = {
-      id: conditions.length,
-      variable1: "Title",
-      relation: "==",
-      variable2: "",
-    };
-    conditions.push(obj);
-    setConditions([...conditions]);
-  }
-  else{
-    alert('Fill in all the existing condition values to add a new one')
-  }
+    let indEmpty = conditions.findIndex((ele) => {
+      return Object.values(ele).indexOf("") !== -1;
+    });
+    if (indEmpty === -1) {
+      let obj = {
+        id: conditions.length,
+        variable1: "Title",
+        relation: "==",
+        variable2: "",
+      };
+      conditions.push(obj);
+      setConditions([...conditions]);
+    } else {
+      alert("Fill in all the existing condition values to add a new one");
+    }
   };
 
+  // fn for deleting any condition
   const deleteCondition = (i: number) => {
     conditions.splice(i, 1);
     setConditions([...conditions]);
@@ -121,7 +126,7 @@ function ConditionGenerator() {
                     value={item.variable1}
                     onChange={(e) => onChangeHandler(i, e, "variable1")}
                   >
-                    {variable1Array.map((itemInner, i) => {
+                    {properties.map((itemInner, i) => {
                       return (
                         <option key={i} value={itemInner}>
                           {itemInner}
